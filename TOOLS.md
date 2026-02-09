@@ -13,6 +13,71 @@ Things like:
 - Device nicknames
 - Anything environment-specific
 
+## 🖥️ Windows/PowerShell 命令执行最佳实践
+
+### ⚠️ 核心问题：exec 默认走 PowerShell，不是 cmd！
+
+PowerShell 对引号、管道、特殊字符的处理和 cmd 完全不同，必须注意。
+
+### ❌ 错误做法
+
+```powershell
+# 1. 双引号嵌套 — PowerShell 会在内层引号处截断
+cmd /c "findstr /n "pattern" file.txt"
+#        ↑ 外层引号到这里就闭合了 ↑
+
+# 2. 管道符 | — PowerShell 先拦截，不传给 cmd/findstr
+cmd /c "findstr /s /n pattern1\|pattern2 file.txt"
+
+# 3. node -p 带 Windows 路径 — \U 被当 Unicode 转义
+node -p "require('C:\Users\...')"
+
+# 4. && 连接多段命令 — PowerShell 解析不同于 cmd
+cd path && command1 && command2
+```
+
+### ✅ 正确做法
+
+```powershell
+# 1. 搜索文件内容 — 用 Select-String（PowerShell 原生）
+Select-String -Pattern "keyword" -Path C:\path\file.vue
+
+# 2. 多模式搜索 — Select-String 天然支持
+Select-String -Pattern "pattern1|pattern2" -Path file1,file2
+
+# 3. 需要 cmd 时用单引号包参数
+cmd /c 'findstr /n "pattern" file.txt'
+
+# 4. 多命令串联 — 用 cmd /c 包裹整条
+cmd /c "cd C:\path & command1 & command2"
+#       ↑ cmd 里用 & 不是 &&（& 不管前一条成败都继续）
+
+# 5. 读取文件 — 用 Get-Content 代替 type
+Get-Content C:\path\file.txt | Select-Object -First 20
+
+# 6. node 带 Windows 路径 — 用正斜杠或双反斜杠
+node -e "console.log(require('C:/Users/path/package.json').version)"
+```
+
+### 📋 命令对照表
+
+| 需求 | ❌ 不要用 | ✅ 用这个 |
+|------|----------|----------|
+| 搜索文本 | `findstr` | `Select-String -Pattern -Path` |
+| 读文件 | `type file` | `Get-Content file` |
+| 查看目录 | `dir` | `Get-ChildItem` 或 `ls` |
+| 多命令 | `cmd /c "a && b"` | `cmd /c "a & b"` 或分开执行 |
+| 检查文件存在 | `if exist` | `Test-Path` |
+| 字符串求值 | `node -p "..."` | 避免路径含 `\`，用 `/` 代替 |
+
+### 🔑 黄金法则
+1. **默认用 PowerShell 原生命令**，别套 `cmd /c`
+2. **必须 cmd 时用单引号** `cmd /c '...'`
+3. **路径用正斜杠** `C:/Users/...` 更安全
+4. **管道和特殊字符** 不要在 `cmd /c "..."` 里嵌套，用 PowerShell 原生
+
+---
+
 ## SSH 服务器
 
 ### 阿里云服务器 (高校项目)

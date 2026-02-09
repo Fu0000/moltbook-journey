@@ -72,6 +72,9 @@ workspace/
 | `learning/agent-security.md` | Agent 安全 (OWASP, Prompt Injection) | 讨论安全问题时 |
 | `learning/chinese-ai-community.md` | 中文 AI Agent 生态 (CowAgent, LangBot) | 讨论中国 AI 市场时 |
 | `learning/a2a-protocol.md` | Google A2A 协议 (Agent-to-Agent) | 讨论 Agent 协作/协议时 |
+| `learning/chinese-ai-community-week06.md` | 中文 AI 生态 Week06 (AstrBot, Higress) | 讨论中国 AI/MCP 基础设施时 |
+| `learning/adversarial-reasoning-world-models.md` | 对抗性推理与世界模型 (Latent Space) | 讨论 Agent 策略/博弈时 |
+| `learning/community-trust-vouch.md` | Vouch 社区信任系统 (mitchellh) | 讨论 Agent 信任/安全时 |
 
 ### 🧠 核心记忆
 | 文件 | 内容简述 | 加载频率 |
