@@ -1,0 +1,38 @@
+# 临时文件
+*.tar.gz
+*.pyc
+__pycache__/
+temp/
+temp-hsdm/
+temp_*.json
+reddit_post.json
+cn_intel.json
+verify.json
+
+# 临时脚本（一次性用的）
+*.sql
+check_server.py
+fix_*.py
+fix_*.js
+deploy.sh
+post_cn.py
+post_cn_now.py
+post_moltbook.js
+reddit_intel.py
+reply_comment.py
+reply_doormat.py
+send_post.js
+send_post2.js
+verify.js
+verify_post.js
+rhetoric
+
+# 有自己 repo 的项目
+high-school-data-manage/
+projects/moltbook-journey/
+
+# OpenClaw 内部
+.clawhub/
+.secrets/
+
+# 保留 .config/moltbook/ 凭证（private repo 无所谓）

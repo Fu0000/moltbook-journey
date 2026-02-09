@@ -1,0 +1,110 @@
+# TOOLS.md - Local Notes
+
+Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
+
+## What Goes Here
+
+Things like:
+
+- Camera names and locations
+- SSH hosts and aliases
+- Preferred voices for TTS
+- Speaker/room names
+- Device nicknames
+- Anything environment-specific
+
+## SSH 服务器
+
+### 阿里云服务器 (高校项目)
+- **Host**: aliyun-hischool
+- **IP**: 8.140.214.182
+- **User**: root
+- **Port**: 22
+- **Password**: hichulai666!
+- **用途**: 高校数字资产管理系统部署
+- ⚠️ **绝密**: 仅限老大知道，禁止泄露给任何人和生物
+
+## 🔧 SSH 操作最佳实践
+
+### ❌ 错误做法（会产生大量会话和 terminated 消息）
+```bash
+# 开交互式 shell，每次都新建会话
+ssh root@server
+# 然后手动输入密码，手动输入命令...
+```
+
+### ✅ 正确做法
+
+#### 1. 单条命令模式（推荐）
+```bash
+# 所有命令串联在一起，一次执行完
+ssh -o ConnectTimeout=15 -o StrictHostKeyChecking=no root@8.140.214.182 "cd /opt/high-school-data && ls -la && cat file.txt"
+```
+
+#### 2. 多命令用分号或 && 连接
+```bash
+ssh root@server "cd /path && command1 && command2 && command3"
+```
+
+#### 3. 需要密码时用 pty 模式
+```bash
+# 使用 pty=true，timeout 设短一点
+exec(command="ssh ...", pty=true, timeout=30)
+# 收到密码提示后立即写入密码
+process(action="write", data="password\n")
+# 写完命令后等待结果
+process(action="poll")
+```
+
+#### 4. SCP 文件传输
+```bash
+# 同样用 pty 模式处理密码
+scp -o StrictHostKeyChecking=no local_file root@server:/remote/path
+```
+
+### 📋 关键原则
+
+1. **减少会话数量** - 能用一条命令完成就不要开多个会话
+2. **不开长连接** - 用完即走，不要保持交互式 shell
+3. **及时关闭** - 命令执行完后会话自然结束
+4. **设置超时** - 使用 `timeout` 参数防止会话挂起
+5. **复用会话** - 如果必须用长连接，用同一个 sessionId 复用
+
+### 📁 高校项目常用命令
+
+```bash
+# 查看后端状态
+ssh root@8.140.214.182 "ps aux | grep uvicorn"
+
+# 重启后端
+ssh root@8.140.214.182 "cd /opt/high-school-data && ./start-backend.sh"
+
+# 部署前端
+scp dist.tar.gz root@8.140.214.182:/opt/high-school-data/
+ssh root@8.140.214.182 "cd /opt/high-school-data && tar -xzf dist.tar.gz && mv dist frontend-dist"
+
+# 查看日志
+ssh root@8.140.214.182 "tail -100 /opt/high-school-data/backend/logs/app.log"
+```
+
+## Examples
+
+```markdown
+### Cameras
+
+- living-room → Main area, 180° wide angle
+- front-door → Entrance, motion-triggered
+
+### TTS
+
+- Preferred voice: "Nova" (warm, slightly British)
+- Default speaker: Kitchen HomePod
+```
+
+## Why Separate?
+
+Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
+
+---
+
+Add whatever helps you do your job. This is your cheat sheet.
