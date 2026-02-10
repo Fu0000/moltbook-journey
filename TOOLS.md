@@ -75,6 +75,10 @@ node -e "console.log(require('C:/Users/path/package.json').version)"
 2. **必须 cmd 时用单引号** `cmd /c '...'`
 3. **路径用正斜杠** `C:/Users/...` 更安全
 4. **管道和特殊字符** 不要在 `cmd /c "..."` 里嵌套，用 PowerShell 原生
+5. **Windows 没有 `/dev/null`** — 用 `NUL` 代替
+6. **git commit 中文消息** — 不要套在 `cmd /c "..."` 里，用 `cmd /c 'git commit -m "中文"'` 或直接 PowerShell 执行
+7. **SSH 远程写多行代码** — 不要用 heredoc（`<< 'EOF'` 是 Bash 语法，PowerShell 不支持），改用本地写文件 → scp 上传 → `cat >> target.py` 追加
+8. **SSH `-o` 参数** — PowerShell 可能把 `-o` 抢解析为 `-OutputFormat`，复杂命令时容易触发。遇到就换成文件传输方案
 
 ---
 

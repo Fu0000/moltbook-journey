@@ -21,6 +21,12 @@
   - 如果连续失败 >= 3 → 用 message 通知老大
 - 如果正常: 清除该任务的 failure 计数
 
+## 🧠 Thinking Signature 清理
+- 用 exec 运行: `node C:/Users/Administrator/.openclaw/workspace/scripts/fix-thinking-signatures.js`
+- 自动修复没有 signature 的 thinking blocks（防止 API 400 错误）
+- 修复后备份原文件（.bak-thinking-fix）
+- 每次心跳检查一次，保持 session 文件干净
+
 ## 📝 记忆维护
 - 检查 memory/ 目录最新的日期文件
 - 如果距今超过 2 天: 创建今日文件 memory/YYYY-MM-DD.md

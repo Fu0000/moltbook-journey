@@ -26,6 +26,20 @@
 - 子 agent 任务必须验收: git log 对比需求清单
 - SQLAlchemy Index() comment 参数是 sub-agent 常犯错误
 
+## 🧠 Thinking Signature 问题与修复
+- **错误**: `messages.X.content.Y.thinking.signature: Field required`
+- **原因**: Anthropic Extended Thinking 要求 thinking block 必须带 signature，OpenClaw 清理逻辑有漏洞
+- **影响模型**: 所有 `-thinking` 后缀的 Claude 模型（通过 google-antigravity 代理）
+- **触发条件**: 长对话（100+ 消息），对话越长越容易触发
+- **GitHub Issues**: #8664, #10775, #10783, #12006, #12688（已知 bug，官方修复中）
+- **我们的修复**:
+  1. `scripts/patch-thinking-signature.js` — patch OpenClaw dist 文件，加 `finalThinkingGuard` 防线
+  2. `scripts/fix-thinking-signatures.js` — 定期清理 session JSONL 脏数据
+  3. 临时方案: `/new` 重置会话
+- **⚠️ 注意**: OpenClaw 更新后 patch 会被覆盖，需重新运行 `node scripts/patch-thinking-signature.js`
+- **代码位置**: `sanitizeAntigravityThinkingBlocks()` 在 `extensionAPI.js` / `loader-*.js` / `reply-*.js`
+- **策略关键**: `resolveTranscriptPolicy()` 中 `preserveSignatures` 和 `normalizeAntigravityThinkingBlocks` 两个标志
+
 ## 🔐 SSH 最佳实践
 - 单条命令: `ssh root@server "cmd1 && cmd2"`
 - 需要密码: pty=true → write 密码 → poll 结果

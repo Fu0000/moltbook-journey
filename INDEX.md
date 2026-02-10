@@ -81,6 +81,7 @@ workspace/
 |------|----------|----------|
 | `MEMORY.md` | 长期记忆精简索引（~55行） | **每次会话** |
 | `memory/highschool-project.md` | 高校项目完整记忆 | 讨论项目时 |
+| `memory/highschool-page-optimization.md` | 页面优化进度跟踪(17任务61子项) | 执行优化任务时 |
 | `memory/tech-notes.md` | 技术经验 + 工具备忘 | 遇到技术问题时 |
 | `memory/YYYY-MM-DD.md` | 当日详细日志 | 每次会话（最近2天） |
 
